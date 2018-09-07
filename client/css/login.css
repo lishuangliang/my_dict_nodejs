@@ -1,0 +1,85 @@
+.u-btn{
+    background: none;
+    border: none;
+    padding: 8px 2px;
+    /*border-radius: 4px;*/
+    text-align: center;
+    cursor: pointer;
+    transition: all ease-in-out 0.2s;
+}
+.u-btn:active{
+    transform: scale(0.99) translateY(2px)
+}
+
+.u-btn-block{
+    display: block;
+    clear: both;
+}
+
+.u-btn-submit{
+    background: rgba(255,255,255,0.9);
+    color: #333;
+}
+
+
+.m-tab{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 300px;
+    padding: 20px 40px;
+    border-radius: 8px;
+    border:1px solid raba(255,255,255,0.4);
+    transform: translate(-50%, -64%);
+    background: rgba(255,255,255,0.6)
+}
+
+.m-tab .btn{
+    display: none;
+    text-align: center;
+}
+
+.m-tab .btn.active{
+    display: block;
+}
+
+.m-tab .btn span{
+    color: #000080;
+    cursor: pointer;
+}
+
+
+.m-form{display: none}
+.m-form.active{ display: block; }
+
+
+
+.m-form .list{
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+.m-form .list .label{
+    float: left;
+    display: block;
+    width: 80px;
+    line-height: 34px;
+    text-align: right;
+}
+
+.m-form .list .u-input{
+    float: right;
+    width: 200px;
+    background: rgba(255,255,255,0.6);
+    padding: 8px 4px;
+    box-sizing: border-box;
+    border-right: 4px;
+    transition: all ease-in-out 0.3s;
+}
+.m-form .list .u-input:focus{
+    outline: none;
+    border-color: #99168a;
+    box-shadow: 0 0 10px #99168a;
+}
+.m-form .list .u-input:focus + span{
+    transform: translateX(10px);
+}

@@ -1,0 +1,77 @@
+.m-plugin-mask{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+
+}
+.m-plugin{
+    position: absolute;
+    left: 50%;
+    top: 36%;
+    width: 280px;
+    margin-left: -140px;
+    background-color: #fff;
+    z-index: 999;
+    animation:slidedown ease-in 0.2s;
+}
+
+
+.m-plugin.z-disable{
+    animation: slidedownRFF ease-in 0.4s
+}
+
+
+
+.m-plugin .title{
+    line-height: 38px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.m-plugin .desc{
+    padding: 4px 10px;
+    line-height: 28px;
+    box-sizing: border-box;
+    text-align: justify;
+    border-bottom: 2px solid #666;
+}
+
+.m-plugin .btn{
+    display: block;
+    width: 100%;
+    text-align: center;
+    line-height: 40px;
+    
+    cursor: pointer;
+    transition: all ease-out 0.3s;
+}
+.m-plugin .btn:hover{
+    background-color: #e2e2e2
+}
+
+
+@keyframes fadeIn{
+    0%{opacity: 0}
+    100%{ opacity: 1 }
+}
+
+@keyframes bounceIn{
+    0%{transform: scale(0)}
+    90%{ transform: scale(1.2); }
+    100%{ transform: scale(1); }
+}
+
+@keyframes slidedown{
+    0%{ transform: translateY(-60%); opacity: 0 }
+    100%{transform: translateY(0); opacity: 1 }
+}
+
+@keyframes slidedownRFF{
+    0%{ transform: translateY(0); opacity: 1 }
+    100%{transform: translateY(60%); opacity: 0 }
+}
+

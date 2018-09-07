@@ -1,0 +1,91 @@
+html, body{
+    background-color: #4B5682;
+    background-image: url('https://img.zcool.cn/community/01be72588d8255a8012060c83dba13.jpg@1280w_1l_2o_100sh.jpg');
+    background-repeat:no-repeat;
+    background-position: left top;
+
+}
+
+.container{
+    position: absolute;
+    left: 10%;
+    top: 60px;
+    width: 80%;
+    padding: 20px;
+    box-sizing: border-box;
+    border:1px solid raba(255,255,255,0.4);
+    background: rgba(255,255,255,0.6)
+}
+
+.m-tab{
+    margin: 20px 0
+}
+
+.m-tab .btns{
+    line-height: 50px;
+    font-style: 20px;
+}
+
+.m-tab .btns button{
+    padding: 6px 20px;
+    transition: all ease-out 0.4s;
+    cursor: pointer;
+}
+.m-tab .btns :not(.active):hover{
+    background:rgba(255,255,255,0.6);
+}
+
+.m-tab .btns .active{
+    background-color: #4B5682;
+    color:#fff;
+}
+
+.m-search-box{
+    margin: 16px 0;
+}
+
+.m-search-box .u-input{
+    height: 44px;
+    width: 400px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    background-color: #fff
+}
+
+.m-search-box .u-btn{
+    height: 44px;
+    width: 100px;
+    margin-left: 10px;
+    background: #4B5682;
+    color: #fff;
+    cursor: pointer;
+    transition: all ease-out 0.4s;
+}
+.m-search-box .u-btn:hover{
+    background-color: #262B41
+}
+
+.container .content{
+    width: 80%;
+    min-height: 200px;
+    padding: 20px;
+    line-height: 28px;
+    color: #333;
+    background: #fff;
+}
+
+
+.container .u-welcome{
+    position: absolute;
+    right: 40px;
+    top: 30px;
+    color: #333
+}
+
+.container .a_logout{
+    margin-left: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    background-color: #4B5682;
+    color: #fff;
+}

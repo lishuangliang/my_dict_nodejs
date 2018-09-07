@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" type="text/css" href="./css/reset.css" />
+    <link rel="stylesheet" type="text/css" href="./css/login.css" />
+    <link rel="stylesheet" type="text/css" href="./css/plugins.css" />
+</head>
+<body>
+
+    <div class="u-bg-blur"></div>
+
+    <div class="m-tab">
+        <div class="u-logo center">
+            <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2905680510,90391487&fm=200&gp=0.jpg" alt="电子词典">
+        </div>
+        <div class="m-form regist active">
+            <div class="list">
+                <span class="label">姓名：</span>
+                <input type="text" name="uname" placeholder="用户名" class="u-input u-name">
+            </div>
+            <div class="list">
+                <span class="label">密码：</span>
+                <input type="password" name="pwd" placeholder="密码" class="u-input u-pwd">
+            </div>
+            <div class="list">
+                <span class="label">密码确认：</span>
+                <input type="password" name="pwd" placeholder="密码" class="u-input u-pwd-sure">
+            </div>
+
+
+            <div class="list">
+                <div class="u-btn u-btn-block u-btn-submit u-btn-regist">注册</div>
+            </div>
+        </div>
+
+        <div class="m-form login">
+            <div class="list">
+                <span class="label">姓名：</span>
+                <input type="text" name="uname" placeholder="用户名" class="u-input u-name">
+            </div>
+            <div class="list">
+                <span class="label">密码：</span>
+                <input type="password" name="pwd" placeholder="密码" class="u-input u-pwd">
+            </div>
+
+            <div class="list">
+                <div class="u-btn u-btn-block u-btn-submit u-btn-login">登录</div>
+            </div>
+        </div>
+
+        
+
+        <div class="btns">
+            <div class="btn active" index="1">已有帐号？<span>马上登录</span></div>
+            <div class="btn" index="0">没有帐号？<span>马上注册</span></div>
+        </div>
+
+    </div>
+
+
+    <script src='./js/tools.js'></script>
+    <script src='./js/plugins.js'></script>
+    <script type="text/javascript">
+
+        (function(){
+
+            var plugins = new lsl.Plugins()
+
+
+            function tab(toLogin){
+                var el = document.querySelector('.m-tab'),
+                    tabs = el.querySelectorAll('.m-form'),
+                    btns = el.querySelectorAll('.btn'),
+                    len = btns.length
+
+
+                for(var i = 0; i < len; i++){
+                    
+                    btns[i].onclick = function(){
+                        change(this.getAttribute('index'))
+                    }
+                }               
+
+                function change(index){ 
+                    for(var j = 0; j < len; j++){
+                        btns[j].classList.remove('active')
+                        tabs[j].classList.remove('active')
+                    }
+                    btns[index].classList.add('active')
+                    tabs[index].classList.add('active')
+                } 
+
+                if(toLogin) change(1)
+            }
+
+            if(lsl.getUrlParam('type') == 'login'){
+                tab(1)    
+            }else{
+                tab()
+            }
+            
+            
+            function form(){
+                document.addEventListener('click', function(e){
+                    var target = e.target
+                    if(target.classList.contains('u-btn-submit')){
+                        if(target.classList.contains('u-btn-login')){
+                            // 登录
+                            login(target)
+                        }else{
+                            // 注册
+                            regist(target)
+                        }
+                    }
+                }, false)
+
+            }
+
+            form()
+
+            function login(btn){
+                uform = btn.parentNode.parentNode
+                uname = uform.querySelector('.u-name').value
+                upwd = uform.querySelector('.u-pwd').value
+
+                uname = uname.trim()
+                upwd = upwd.trim()
+
+                console.log(uname, upwd)
+
+                if(!uname || !upwd){
+                    plugins.alert('用户名或密码不能为空')
+                    return
+                }
+
+                if(uname.indexOf(' ') > -1 || upwd.indexOf(' ') > -1){
+                    plugins.alert('用户名或密码中不能包含空格')
+                    return   
+                }
+
+                lsl.ajax({
+                    url : "login.rc", 
+                    type : "POST",  
+                    async : true,   
+                    data : {       
+                        name : uname,
+                        pwd : upwd
+                    },
+                    success : function(data){  
+                        data = lsl.strToObj(data)
+                        console.log('login.rc',data)
+                        if(data.code != 200){
+                            plugins.alert(data.msg)
+                            return
+                        }
+
+                        lsl.setSessionstorage('username', uname)
+                        plugins.toast({
+                            desc : '登录成功！',
+                            callback : function(){
+                                location.href = './index.html'        
+                            }
+                        })
+                    }
+                })
+            }
+
+            function regist(btn){
+                uform = btn.parentNode.parentNode
+                uname = uform.querySelector('.u-name').value
+                upwd = uform.querySelector('.u-pwd').value
+                upwdSure = uform.querySelector('.u-pwd-sure').value
+
+                uname = uname.trim()
+                upwd = upwd.trim()
+                upwdSure = upwdSure.trim()
+
+                console.log(uname, upwd, upwdSure)
+
+                if(!uname || !upwd || !upwdSure){
+                    plugins.alert('选项不能为空')
+                    return
+                }
+
+                if(upwd != upwdSure){
+                    plugins.alert('两次输入的密码不相同')
+                    return
+                }
+
+                if(uname.indexOf(' ') > -1 || upwd.indexOf(' ') > -1){
+                    plugins.alert('用户名或密码中不能包含空格')
+                    return   
+                }
+
+
+                lsl.ajax({
+                    url : "regist.rc", 
+                    type : "POST",  
+                    async : true,   
+                    data : {       
+                        name : uname,
+                        pwd : upwd
+                    },
+                    success : function(data){  
+                        console.log(data)
+                        console.log(typeof(data))                    
+                        data = lsl.strToObj(data)
+                        console.log('login.rc',data)
+                        if(data.code != 200){
+                            plugins.alert(data.msg)
+                            return
+                        }
+                        plugins.alert('新用户'+ uname +'注册成功！')
+                        tab(1)
+                    }
+                })
+            }
+
+            
+        })();
+
+    </script>
+</body>
+</html>

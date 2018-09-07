@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" href="./css/reset.css" />
+    <link rel="stylesheet" type="text/css" href="./css/index.css" />
+    <link rel="stylesheet" type="text/css" href="./css/plugins.css" />
+    <style type="text/css">
+        .m-pagination{
+            margin-top: 16px;
+        }
+        .m-pagination .u-page-index{
+            display: inline-block;
+            margin-right: 4px;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            background: #fff;
+            color: #333;
+        }
+        .m-pagination .u-page-index:hover,
+        .m-pagination .u-page-index.active{
+            background: #4B5682;
+            color: #fff;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- <div class="u-bg-blur"></div> -->
+
+    <div class="container">
+
+        <div class="u-logo">
+            <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2905680510,90391487&fm=200&gp=0.jpg" alt="电子词典">
+        </div>
+        <div class="m-tab">
+            <div class="btns">
+                <button class="tab-btn active" data-type="search_word">查词</button>
+                <button class="tab-btn" data-type="search_hist">历史查询</button>
+            </div>
+
+            <div class="m-search-box">
+                <input type="text"  placeholder="请输入您要查询的单词" class="u-input search_input">
+                <input type="button" value="查询" class="u-btn u-btn-search">
+            </div>
+            <div class="content">...</div>
+            <div class="m-pagination">
+                <!-- <a class="u-page-index active" href="#pageNum=1">1</a>
+                <a class="u-page-index" href="#pageNum=2">2</a>
+                <a class="u-page-index" href="#pageNum=3">3</a>
+                <a class="u-page-index" href="#pageNum=4">4</a>
+                <a class="u-page-index" href="#pageNum=5">5</a> -->
+            </div>
+        </div>
+        <div class="u-welcome">
+            welcome
+        </div>
+    </div>
+
+    <script src='./js/tools.js'></script>
+    <script src='./js/plugins.js'></script>
+    <script type="text/javascript">
+        (function(){
+            
+
+            var g_dom = {}
+
+            g_dom.search_box = document.querySelector('.m-search-box')
+            g_dom.u_input = g_dom.search_box.querySelector('.search_input')
+            
+            g_dom.search_word_btn = g_dom.search_box.querySelector('.u-btn-search')
+            g_dom.content = document.querySelector('.content')
+
+            var plugins = new lsl.Plugins()
+
+            
+            
+            
+
+            function tab(){
+                var el = document.querySelector('.m-tab'),
+                    btns = el.querySelectorAll('.tab-btn')
+
+                btns[0].addEventListener('click', handler, false)
+                btns[1].addEventListener('click', handler, false)
+
+                function handler(){
+                    for(var i = 0, len = btns.length; i < len; i++){
+                        btns[i].classList.remove('active')
+                    }
+                    this.classList.add('active')
+
+                    if(this.getAttribute('data-type') == 'search_hist'){
+                        
+                        g_dom.u_input.value = ''
+                        g_dom.search_box.style.display = 'none'
+                        search_hist()
+                    }else{
+                        g_dom.search_box.style.display = 'block';
+                    }
+                    g_dom.content.innerHTML = ''
+                }
+
+
+
+            }
+
+            tab()
+
+
+
+
+            function search_word(){
+                g_dom.search_word_btn.addEventListener('click', function(){
+
+                    var username = lsl.getSessionstorage('username')
+                    if(!username){
+                        plugins.alert({
+                            desc : '用户登录信息丢失，请重新登录',
+                            callback: function(){
+                                location.href = './login.html?type=login'        
+                            }
+                        })
+                        return
+                    }
+
+
+                    if(!g_dom.u_input.value){
+                        plugins.alert('查询单词不能为空')
+                        return
+                    }    
+
+                    if(g_dom.u_input.value.indexOf(' ') > -1){
+                        // 输入的单词中包含空格
+                        plugins.alert('单词中不能包含空格哦！')
+                        return 
+                    }
+
+
+                    lsl.ajax({
+                        url : "searchWord.rc", 
+                        type : "POST",  
+                        async : true,   
+                        data : {
+                            name : username,       
+                            word : g_dom.u_input.value
+                        },
+                        success : function(data){  
+                            res = lsl.strToObj(data)
+                            // console.log('searchWord.rc',data)
+                            if(res.code != 200){
+                                plugins.alert(res.msg)
+                                return
+                            }
+
+                            g_dom.content.innerHTML = res.data.desc
+                        }
+                    })
+
+
+                }, false)
+                
+            }
+
+
+            function search_hist(pageNum, isClick){
+                var username = lsl.getSessionstorage('username')
+                if(!username){
+                    plugins.alert('用户登录信息丢失，请重新登录')
+                    location.href = './login.html'
+                    return
+                }
+
+                var pageNum = pageNum || 1;
+
+                if(location.hash && !isClick){
+                    var _array = location.hash.substring(1).split('=');
+                    if(_array[0] == 'pageNum'){
+                        pageNum = _array[1]    
+                    }
+                }
+
+                
+                console.log('pageNum:' + pageNum)
+
+                if(search_hist.ajaxing)　return;
+                search_hist.ajaxing = true;
+                lsl.ajax({
+                    url : "searchHist.rc", 
+                    type : "POST",  
+                    async : true,   
+                    data : {
+                        name : username,
+                        pageSize : 10,
+                        pageNum : pageNum
+                    },
+                    success : function(data){  
+                        res = lsl.strToObj(data)
+                        // console.log('searchHist.rc',data)
+                        if(res.code != 200){
+                            plugins.alert(res.msg)
+                            return
+                        }
+                        
+                        var data_obj = typeof res.data !== 'object' ? eval('(' +res.data+ ')') : res.data;
+
+                        data_list = data_obj.data_list;
+                        data_pageSize = data_obj.pageSize;
+                        g_dom.content.innerHTML = '';
+                        g_dom.content.appendChild(createTable(data_list));
+                        
+                        search_hist.ajaxing = false;
+                        pagination(data_pageSize, 10, pageNum);
+                    }
+                })
+            }
+
+
+            function createTable(data){
+                var el = document.createElement('table');
+                el.innerHTML = '<thead><tr class="header"><td>单词</td><td>查询时间</td></tr></thead>';
+
+                for(var i = 0, len =data.length; i < len; i++){
+                    el.innerHTML += '<tr class="list"><td>' +data[i].word+ '</td><td>' +lsl.timeFormat(data[i].t)+ '</td></tr>';
+                }
+
+                return el
+            }
+
+
+            function pagination(total, size, currNum){
+                var el = document.querySelector('.m-pagination'),
+                    frag = document.createDocumentFragment(),
+                    len = Math.ceil(total / size),
+                    list_a = null;
+
+                el.innerHTML = '';
+
+                for(var i = 1; i <= len;i++){
+                    var ele = document.createElement('a');
+                    ele.className = 'u-page-index';
+                    if(i == currNum){
+                        ele.classList.add('active')
+                    }
+                    ele.setAttribute('href', '#pageNum=' + i);
+                    ele.innerHTML = i;
+                    frag.appendChild(ele)
+                }
+
+                el.appendChild(frag);
+                list_a = el.querySelectorAll('.u-page-index')
+
+
+                el.addEventListener('click', function(e){
+
+                    var target = e.target
+                    if(target.classList.contains('u-page-index')){
+                        for(var i = 0, len = list_a.length; i < len; i++){
+                            list_a[i].classList.remove('active')
+                        }
+                        target.classList.add('active')
+
+                        
+                        search_hist(target.innerHTML, true)
+                    }
+                    e.preventDefault();
+                },false)
+            }
+
+
+            
+
+            function welcome_text(){
+                var time = new Date(),
+                    text = '',
+                    hour = time.getHours();
+                    
+
+                if(hour > 0 && hour < 12){
+                    text = '上午好 ';
+                }else if(hour >= 12 && hour <= 13){
+                    text = '中午好 ';
+                }else{
+                    text = '下午好 ';
+                }
+
+                var username = lsl.getSessionstorage('username')
+
+
+                if(username){
+                    text +=  username + ' <a class="a_logout" href="./login.html?type=login">退出登录</a>'
+                }else{
+                    text += '游客　<a class="a_logout" href="./login.html?type=login">前往登录</a>'
+                }
+
+                document.querySelector('.u-welcome').innerHTML = text;
+            }
+
+            search_word()
+            welcome_text()
+
+
+
+        })()
+
+
+    </script>
+</body>
+</html>
